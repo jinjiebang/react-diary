@@ -1,0 +1,38 @@
+.login-container {
+  display: flex;
+  padding-top: 7rem;
+  flex-direction: column;
+}
+.login-input {
+  padding: 0 1rem;
+  border-radius: 4px;
+}
+.btn-wrap {
+  padding: 0 1rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+.btn-wrap .btn-link {
+  margin-top: 1rem;
+  display: inline-block;
+  color: #007fff;
+}
+
+.logo {
+  padding: 0 3rem;
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.logo h1 {
+  width: 2rem;
+  display: inline-block;
+  margin: 0;
+  position: relative;
+  top: -1rem;
+}
+.logo .icon {
+  width: 6rem;
+  height: 6rem;
+  position: relative;
+  top: 0.3rem;
+}

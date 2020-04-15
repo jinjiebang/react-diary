@@ -1,9 +1,43 @@
 import React from 'react';
-import { Button} from 'antd-mobile'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import Login from './views/login'
 
+const routes = [
+  // {
+  //   path: '/diaryDetail/:id',
+  //   component: DiaryDetail
+  // },
+  // {
+  //   path: '/writeDiary',
+  //   component: WriteDiary
+  // },
+  // {
+  //   path: '/register',
+  //   component: Register
+  // },
+  // {
+  //   path: '/login',
+  //   component: Login
+  // },
+  {
+    path: '/',
+    component: Login
+  },
+  // {
+  //   path: '*',
+  //   component: NoMatch
+  // }
+]
 function App() {
   return (
-    <Button>start</Button>
+    <Router>
+      <Switch>
+        {routes.map((route, index) => (
+          <Route {...route} key={index} />
+        ))}
+      </Switch>
+    </Router>
+
   );
 }
 
