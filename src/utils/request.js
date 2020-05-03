@@ -3,7 +3,7 @@ import qs from 'qs'
 import { Toast } from 'antd-mobile'
 
 const instance = Axios.create({
-    baseURL: 'http://apidiary.huabingtao.com/',
+    baseURL: 'http://localhost:3001/',
     timeout: 5000
 })
 

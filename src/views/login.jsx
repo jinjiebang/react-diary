@@ -23,7 +23,7 @@ class Login extends React.Component {
         })
         localStorage.setItem('user', res.data.user)
         Toast.success('登录成功', 1.5, _ => {
-            // this.props.history.push('/index')
+            this.props.history.push('/index')
         })
     }
     onChangeEmail(email) {

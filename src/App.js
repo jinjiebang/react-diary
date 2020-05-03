@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Login from './views/login'
+import Register from './views/register'
+import Index from './views';
 
 const routes = [
   // {
@@ -11,14 +13,18 @@ const routes = [
   //   path: '/writeDiary',
   //   component: WriteDiary
   // },
-  // {
-  //   path: '/register',
-  //   component: Register
-  // },
-  // {
-  //   path: '/login',
-  //   component: Login
-  // },
+  {
+    path: '/register',
+    component: Register
+  },
+  {
+    path: '/login',
+    component: Login
+  },
+  {
+    path:'/index',
+    component: Index
+  },
   {
     path: '/',
     component: Login
