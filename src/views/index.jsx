@@ -26,7 +26,7 @@ class Index extends React.Component {
         this.getAllDiarys()
     }
     async getAllDiarys() {
-        const user = window.localStorage.getItem("user") || JSON.parse(window.localStorage.getItem("user"));
+        const user = window.localStorage.getItem("user") && JSON.parse(window.localStorage.getItem("user"));
         if (!user) {
             this.props.history.push('/login')
             return;

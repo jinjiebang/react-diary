@@ -9,7 +9,7 @@ const instance = Axios.create({
 
 instance.interceptors.request.use(
     config => {
-        if (config.method === 'GET') {
+        if (config.method === 'get') {
             config.paramsSerializer = params => {
                 return qs.stringify(params, { arrayFormat: 'brackets' })
             }
