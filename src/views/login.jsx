@@ -21,7 +21,7 @@ class Login extends React.Component {
             email,
             password
         })
-        localStorage.setItem('user', res.data.user)
+        localStorage.setItem('user', JSON.stringify(res.data.user))
         Toast.success('登录成功', 1.5, _ => {
             this.props.history.push('/index')
         })
