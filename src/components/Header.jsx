@@ -16,16 +16,17 @@ class Header extends React.Component {
             showOverlay: false,
             selectedValue: ''
         }
-        this.onSelect = this.onSelect.bind(this)
-        this.handleOverlayVisible = this.handleOverlayVisible.bind(this)
     }
-    onSelect(value) {
+    onSelect = (opt) => {
         this.setState({
-            showOverlay: false
+            showOverlay: false,
+            selectedValue: opt.props.value
         })
-        console.log('onSelect', value)
+        if (opt.props.value === 'exit') {
+            this.props.onTabRight()
+        }
     }
-    handleOverlayVisible(value) {
+    handleOverlayVisible = (value) => {
         this.setState({
             showOverlay: value
         })
@@ -51,7 +52,7 @@ class Header extends React.Component {
                                     key="1"
                                     icon={
                                         myImg("tOtXhkIWzwotgGSeptou")
-                                      }
+                                    }
                                 >
                                     退出
                                 </Item>
