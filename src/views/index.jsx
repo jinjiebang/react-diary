@@ -5,12 +5,19 @@ import Header from '../components/Header'
 import DiaryList from '../components/DiaryList'
 import axios from '../utils/request'
 import NoListData from '../components/NoListData'
+import AddButton from '../components/AddButton'
 const tabs = [
     { title: '广场', sub: '1' },
     { title: '我的', sub: '2' }
 ]
 const TabBox = styled.div`
     margin-top: 1rem;
+`
+
+const AddWrap = styled.div`
+    position: fixed;
+    bottom: 5rem;
+    right: 2rem;
 `
 class Index extends React.Component {
     constructor() {
@@ -108,6 +115,10 @@ class Index extends React.Component {
         window.localStorage.removeItem('user')
         this.props.history.push('/login')
     }
+
+    onClickButton = () => {
+        this.props.history.push('/writeDiary')
+    }
     render() {
         return (
             <div>
@@ -134,6 +145,9 @@ class Index extends React.Component {
                             ></DiaryList> : <NoListData></NoListData>
                     }</TabBox>
                 </Tabs>
+                <AddWrap>
+                    <AddButton onClickButton={this.onClickButton}></AddButton>
+                </AddWrap>
             </div>
         )
     }
