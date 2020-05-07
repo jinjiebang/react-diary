@@ -3,7 +3,7 @@ import qs from 'qs'
 import { Toast } from 'antd-mobile'
 
 const instance = Axios.create({
-    baseURL: 'http://localhost:3001/',
+    baseURL: 'http://118.190.211.6:3001/',
     timeout: 5000
 })
 
@@ -26,13 +26,16 @@ instance.interceptors.response.use(
         return response
     },
     error => {
-        let res = JSON.parse(JSON.stringify(error))
-        if (res.message === 'Network Error') {
+        if (error.message === 'Network Error') {
             Toast.fail("服务器异常请稍后再试", 2)
             return Promise.reject()
         }
-        let data = error.response.data
-        Toast.fail(data.message ? data.message : data, 2)
+        if (error.response) {
+            let data = error.response.data
+            Toast.fail(data.message ? data.message : data, 2)
+        } else {
+            Toast.fail(error.message, 2)
+        }
         return Promise.reject(error)
     }
 )

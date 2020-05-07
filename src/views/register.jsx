@@ -20,7 +20,7 @@ class Register extends React.Component {
     }
     async onRegister() {
         const { email, nickname, password1, password2} = this.state;
-        axios.post('user/register',{
+        await axios.post('user/register',{
             email,
             nickname,
             password1,
