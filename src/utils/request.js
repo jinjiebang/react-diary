@@ -3,7 +3,7 @@ import qs from 'qs'
 import { Toast } from 'antd-mobile'
 
 const instance = Axios.create({
-    baseURL: 'http://118.190.211.6:3001/',
+    baseURL: 'http://118.190.211.5:3001/',
     timeout: 5000
 })
 
