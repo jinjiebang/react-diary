@@ -29,7 +29,7 @@ class WriteDiary extends Component {
     componentDidMount() {
         this.autoFocusInst.focus()
         if (this.props.location.state) {
-            const { uid, id, content } = this.props.location.state
+            const { uid, id, content } = this.props.location.state.diaryDetail
             this.setState({
                 uid,
                 id,

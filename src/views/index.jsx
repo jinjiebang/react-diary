@@ -11,13 +11,20 @@ const tabs = [
     { title: '我的', sub: '2' }
 ]
 const TabBox = styled.div`
-    margin-top: 1rem;
+    height:100%;
+    padding-top: 1rem;
+    box-sizing: border-box;
 `
 
 const AddWrap = styled.div`
     position: fixed;
     bottom: 5rem;
     right: 2rem;
+`
+const IndexWrap = styled.div`
+    height: 100%;
+    display:flex;
+    flex-direction:column;
 `
 class Index extends React.Component {
     constructor() {
@@ -29,7 +36,7 @@ class Index extends React.Component {
             isDidMyDiary: false,
             selected: "",
             tabIndex: 0,
-            pagecount: 5
+            pagecount: 10
         };
     }
     componentDidMount() {
@@ -53,7 +60,6 @@ class Index extends React.Component {
         if (res.data.length > 0) {
             this.setState({
                 allDiarys: [...this.state.allDiarys, ...res.data],
-                refreshing: false
             });
         }
     }
@@ -75,7 +81,6 @@ class Index extends React.Component {
         if (res.data.length > 0) {
             this.setState({
                 myDiarys: [...this.state.myDiarys, ...res.data],
-                refreshing: false
             });
         }
     }
@@ -129,7 +134,7 @@ class Index extends React.Component {
     render() {
         const { pagecount } = this.state
         return (
-            <div>
+            <IndexWrap>
                 <Header onTabRight={this.onTabRight} />
                 <Tabs
                     tabs={tabs}
@@ -143,9 +148,10 @@ class Index extends React.Component {
                                 onClickDiary={this.onClickDiary}
                                 onClickFavor={this.onClickFavor}
                                 pagecount={pagecount}
-                                onRefresh={(start, count) => {
+                                onRefresh={async (start, count) => {
                                     this.setState({ refreshing: true })
-                                    this.getAllDiarys(start, count)
+                                    await this.getAllDiarys(start, count)
+                                    this.setState({ refreshing: false })
                                 }}
                             ></DiaryList> : <NoListData></NoListData>
                     }</TabBox>
@@ -156,9 +162,10 @@ class Index extends React.Component {
                                 onClickDiary={this.onClickDiary}
                                 onClickFavor={this.onClickFavor}
                                 pagecount={pagecount}
-                                onRefresh={(start, count) => {
+                                onRefresh={async (start, count) => {
                                     this.setState({ refreshing: true })
-                                    this.getMyDiarys(start, count)
+                                    await this.getMyDiarys(start, count)
+                                    this.setState({ refreshing: false })
                                 }}
                             ></DiaryList> : <NoListData></NoListData>
                     }</TabBox>
@@ -166,7 +173,7 @@ class Index extends React.Component {
                 <AddWrap>
                     <AddButton onClickButton={this.onClickButton}></AddButton>
                 </AddWrap>
-            </div>
+            </IndexWrap>
         )
     }
 }

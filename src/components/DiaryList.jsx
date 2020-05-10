@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { PullToRefresh } from 'antd-mobile'
 const ItemWrap = styled.div`
     width: 100%;
-    padding: 0 0.8rem;
+    padding: 0.8rem 0.8rem;
 `
 const Item = styled.div`
     border-radius: 0.3rem;
@@ -49,7 +49,7 @@ class DiaryList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            down: false,
+            down: true,
         }
         this.pageNum = 0;
         this.bgcolors = ["#b7c981", "#b2a69c", "#ad8dc6", "#bfb2a8", "#8d847e", "#a1807d", "#88d0c0"]
@@ -70,6 +70,10 @@ class DiaryList extends Component {
                 refreshing={this.props.refreshing}
                 onRefresh={this.onRefresh}
                 distanceToRefresh={80}
+                style={{
+                    height: '100%',
+                    overflow: 'auto',
+                }}
                 ref={el => this.ptr = el}
                 indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
                 direction={this.state.down ? 'down' : 'up'}
