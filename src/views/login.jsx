@@ -16,11 +16,11 @@ class Login extends React.Component {
     }
     async onLogin() {
         const { email, password } = this.state;
-        console.log('login',email,password)
         const res = await axios.post('user/login', {
             email,
             password
         })
+        console.log('login', res.data.user)
         localStorage.setItem('user', JSON.stringify(res.data.user))
         Toast.success('登录成功', 1.5, _ => {
             this.props.history.push('/index')

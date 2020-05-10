@@ -1,0 +1,54 @@
+.headerWrap {
+  display: flex;
+  color: #fff;
+  font-size: 1.2rem;
+  height: 3rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  background: #53a6db;
+  .feature {
+    display: flex;
+    width: 100px;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: -0.5rem;
+  }
+  .icon {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.2rem;
+    color: #fff;
+  }
+}
+.contentWrap {
+  height: 100%;
+  background: #d7ebdd;
+  .pad {
+    padding: 0 1.2rem;
+    font-size: 1.2rem;
+    line-height: 1.5rem;
+    max-height: 100%;
+    .feature {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #3e7de0;
+      margin: 1.2rem 0 2rem 0;
+    }
+    .ability {
+      display: flex;
+      margin-right: -1.2rem;
+      .abilityItem {
+        display: flex;
+        align-items: center;
+        margin-right: 1rem;
+        .abilityItemIconSvg {
+          width: 1.4rem;
+          height: 1.4rem;
+          padding: 0 0.5rem 0;
+        }
+      }
+    }
+  }
+}

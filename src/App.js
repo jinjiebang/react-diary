@@ -1,15 +1,16 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, useLocation } from 'react-router-dom'
 import Login from './views/login'
 import Register from './views/register'
 import Index from './views';
 import WriteDiary from './views/write-diary'
+import DiaryDetail from './views/diary-detail';
 
 const routes = [
-  // {
-  //   path: '/diaryDetail/:id',
-  //   component: DiaryDetail
-  // },
+  {
+    path: '/diaryDetail/:id',
+    component: DiaryDetail
+  },
   {
     path: '/writeDiary',
     component: WriteDiary
@@ -23,17 +24,17 @@ const routes = [
     component: Login
   },
   {
-    path:'/index',
+    path: '/index',
     component: Index
   },
   {
     path: '/',
     component: Login
   },
-  // {
-  //   path: '*',
-  //   component: NoMatch
-  // }
+  {
+    path: '*',
+    component: NoMatch
+  }
 ]
 function App() {
   return (
@@ -47,5 +48,13 @@ function App() {
 
   );
 }
+function NoMatch() {
+  let location = useLocation()
 
+  return (
+    <div>
+      <h3>No match for {location.pathname}</h3>
+    </div>
+  )
+}
 export default App;

@@ -79,8 +79,8 @@ class Index extends React.Component {
             });
         }
     }
-    onClickDiary = () => {
-
+    onClickDiary = (item) => {
+        this.props.history.push(`diaryDetail/${item.id}`);
     }
     onClickFavor = (item, e) => {
         e.stopPropagation()
