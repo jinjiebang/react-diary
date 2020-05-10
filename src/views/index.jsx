@@ -59,7 +59,7 @@ class Index extends React.Component {
         console.log('diray data', res.data)
         if (res.data.length > 0) {
             this.setState({
-                allDiarys: [...this.state.allDiarys, ...res.data],
+                allDiarys: res.data,
             });
         }
     }
@@ -80,7 +80,7 @@ class Index extends React.Component {
         console.log('mydiray data', res.data)
         if (res.data.length > 0) {
             this.setState({
-                myDiarys: [...this.state.myDiarys, ...res.data],
+                myDiarys: res.data,
             });
         }
     }

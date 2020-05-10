@@ -58,7 +58,11 @@ class DiaryList extends Component {
         return content.length < 68 ? content : content.substring(0, 65) + '...';
     }
     onRefresh = () => {
-        this.pageNum++;
+        if (this.state.down) {
+            this.pageNum = 0;
+        } else {
+            this.pageNum++;
+        }
         const start = this.pageNum * this.props.pagecount;
         const count = this.props.pagecount;
         this.props.onRefresh(start, count);
