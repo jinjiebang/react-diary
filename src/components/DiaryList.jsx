@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components'
+import { PullToRefresh } from 'antd-mobile'
 const ItemWrap = styled.div`
     width: 100%;
     padding: 0 0.8rem;
@@ -47,39 +48,60 @@ const IconSvg = styled.svg`
 class DiaryList extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            down: false,
+        }
+        this.pageNum = 0;
         this.bgcolors = ["#b7c981", "#b2a69c", "#ad8dc6", "#bfb2a8", "#8d847e", "#a1807d", "#88d0c0"]
     }
     filterContent(content) {
         return content.length < 68 ? content : content.substring(0, 65) + '...';
     }
+    onRefresh = () => {
+        this.pageNum++;
+        const start = this.pageNum * this.props.pagecount;
+        const count = this.props.pagecount;
+        this.props.onRefresh(start, count);
+    }
     render() {
-        return (<ItemWrap>
-            {this.props.list.map((item, index) => {
-                return (<Item
-                    style={{ backgroundColor: this.bgcolors[index % this.bgcolors.length] }}
-                    key={item.id}
-                    onClick={this.props.onClickDiary.bind(this, item)}
-                >
-                    <ItemTitle>{item.nickname}</ItemTitle>
-                    <ItemContent>{this.filterContent(item.content)}</ItemContent>
-                    <ItemFeature>
-                        <ItemFavor>
-                            <div onClick={this.props.onClickFavor.bind(this, item)}>
-                                <IconSvg
-                                    className="icon svg-icon"
-                                    aria-hidden="true"
-                                >
-                                    {item.isFavor === 1 ? (<use href="#icon-xihuan" />) : (<use href="#icon-xihuanhui" />)}
-                                </IconSvg>
-                            </div>
-                            <span>{item.favor_nums}</span>
-                        </ItemFavor>
-                        <ItemTime>{item.create_time}</ItemTime>
-                    </ItemFeature>
-                </Item>)
-            })}
-        </ItemWrap>);
+        return (
+            <PullToRefresh
+                damping={100}
+                refreshing={this.props.refreshing}
+                onRefresh={this.onRefresh}
+                distanceToRefresh={80}
+                ref={el => this.ptr = el}
+                indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
+                direction={this.state.down ? 'down' : 'up'}
+            >
+                <ItemWrap>
+                    {this.props.list.map((item, index) => {
+                        return (<Item
+                            style={{ backgroundColor: this.bgcolors[index % this.bgcolors.length] }}
+                            key={item.id}
+                            onClick={this.props.onClickDiary.bind(this, item)}
+                        >
+                            <ItemTitle>{item.nickname}</ItemTitle>
+                            <ItemContent>{this.filterContent(item.content)}</ItemContent>
+                            <ItemFeature>
+                                <ItemFavor>
+                                    <div onClick={this.props.onClickFavor.bind(this, item)}>
+                                        <IconSvg
+                                            className="icon svg-icon"
+                                            aria-hidden="true"
+                                        >
+                                            {item.isFavor === 1 ? (<use href="#icon-xihuan" />) : (<use href="#icon-xihuanhui" />)}
+                                        </IconSvg>
+                                    </div>
+                                    <span>{item.favor_nums}</span>
+                                </ItemFavor>
+                                <ItemTime>{item.create_time}</ItemTime>
+                            </ItemFeature>
+                        </Item>)
+                    })}
+                </ItemWrap>
+            </PullToRefresh>
+        );
     }
 }
 

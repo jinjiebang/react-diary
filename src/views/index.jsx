@@ -28,13 +28,14 @@ class Index extends React.Component {
             visible: true,
             isDidMyDiary: false,
             selected: "",
-            tabIndex: 0
+            tabIndex: 0,
+            pagecount: 5
         };
     }
     componentDidMount() {
-        this.getAllDiarys()
+        this.getAllDiarys(0, this.state.pagecount)
     }
-    async getAllDiarys() {
+    getAllDiarys = async (start = 0, count = 10) => {
         let userInfo = window.localStorage.getItem("user")
         const user = userInfo && JSON.parse(userInfo);
         if (!user) {
@@ -43,16 +44,20 @@ class Index extends React.Component {
         }
         const res = await axios.get("diary", {
             params: {
-                uid: user.id
+                uid: user.id,
+                start,
+                count
             }
         });
         console.log('diray data', res.data)
-        this.setState({
-            allDiarys: res.data,
-            refreshing: false
-        });
+        if (res.data.length > 0) {
+            this.setState({
+                allDiarys: [...this.state.allDiarys, ...res.data],
+                refreshing: false
+            });
+        }
     }
-    async getMyDiarys() {
+    getMyDiarys = async (start = 0, count = 10) => {
         let userInfo = window.localStorage.getItem("user")
         const user = userInfo && JSON.parse(userInfo);
         if (!user) {
@@ -62,15 +67,17 @@ class Index extends React.Component {
         const res = await axios.get("diary/myDiary", {
             params: {
                 id: user.id,
-                start: 0,
-                count: 10
+                start,
+                count
             }
         });
         console.log('mydiray data', res.data)
-        this.setState({
-            myDiarys: res.data,
-            refreshing: false
-        });
+        if (res.data.length > 0) {
+            this.setState({
+                myDiarys: [...this.state.myDiarys, ...res.data],
+                refreshing: false
+            });
+        }
     }
     onClickDiary = () => {
 
@@ -120,6 +127,7 @@ class Index extends React.Component {
         this.props.history.push('/writeDiary')
     }
     render() {
+        const { pagecount } = this.state
         return (
             <div>
                 <Header onTabRight={this.onTabRight} />
@@ -134,6 +142,11 @@ class Index extends React.Component {
                                 list={this.state.allDiarys}
                                 onClickDiary={this.onClickDiary}
                                 onClickFavor={this.onClickFavor}
+                                pagecount={pagecount}
+                                onRefresh={(start, count) => {
+                                    this.setState({ refreshing: true })
+                                    this.getAllDiarys(start, count)
+                                }}
                             ></DiaryList> : <NoListData></NoListData>
                     }</TabBox>
                     <TabBox>{
@@ -142,6 +155,11 @@ class Index extends React.Component {
                                 list={this.state.myDiarys}
                                 onClickDiary={this.onClickDiary}
                                 onClickFavor={this.onClickFavor}
+                                pagecount={pagecount}
+                                onRefresh={(start, count) => {
+                                    this.setState({ refreshing: true })
+                                    this.getMyDiarys(start, count)
+                                }}
                             ></DiaryList> : <NoListData></NoListData>
                     }</TabBox>
                 </Tabs>
