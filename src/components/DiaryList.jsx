@@ -57,7 +57,7 @@ class DiaryList extends Component {
             data: [],
             useBodyScroll: false,
             isLoading: false,
-            isRefreshing: false,
+            refreshing: false,
             hasMore: true,
             down: true,
         }
@@ -97,7 +97,7 @@ class DiaryList extends Component {
         let data = isPullDown ? newData : [...this.state.data, ...newData]
         this.setState({
             isLoading: false,
-            isRefreshing: false,
+            refreshing: false,
             data,
             dataSource: this.state.dataSource.cloneWithRows(data)
         })
