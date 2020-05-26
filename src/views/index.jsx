@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import Header from '../components/Header'
 import DiaryList from '../components/DiaryList'
 import axios from '../utils/request'
-import NoListData from '../components/NoListData'
 import AddButton from '../components/AddButton'
 const tabs = [
     { title: '广场', sub: '1' },
@@ -30,17 +29,11 @@ class Index extends React.Component {
     constructor() {
         super();
         this.state = {
-            allDiarys: [],
-            myDiarys: [],
             visible: true,
-            isDidMyDiary: false,
             selected: "",
             tabIndex: 0,
-            pagecount: 10
+            pageSize: 5
         };
-    }
-    componentDidMount() {
-        this.getAllDiarys(0, this.state.pagecount)
     }
     getAllDiarys = async (start = 0, count = 10) => {
         let userInfo = window.localStorage.getItem("user")
@@ -57,11 +50,7 @@ class Index extends React.Component {
             }
         });
         console.log('diray data', res.data)
-        if (res.data.length > 0) {
-            this.setState({
-                allDiarys: res.data,
-            });
-        }
+        return res.data;
     }
     getMyDiarys = async (start = 0, count = 10) => {
         let userInfo = window.localStorage.getItem("user")
@@ -78,11 +67,7 @@ class Index extends React.Component {
             }
         });
         console.log('mydiray data', res.data)
-        if (res.data.length > 0) {
-            this.setState({
-                myDiarys: res.data,
-            });
-        }
+        return res.data;
     }
     onClickDiary = (item) => {
         this.props.history.push(`diaryDetail/${item.id}`);
@@ -115,10 +100,6 @@ class Index extends React.Component {
         }
     }
     onTabClick = (tab, index) => {
-        if (!this.isDidMyDiary && index === 1) {
-            this.getMyDiarys();
-            this.isDidMyDiary = true;
-        }
         this.setState({
             tabIndex: index
         })
@@ -132,7 +113,7 @@ class Index extends React.Component {
         this.props.history.push('/writeDiary')
     }
     render() {
-        const { pagecount } = this.state
+        const { pageSize } = this.state
         return (
             <IndexWrap>
                 <Header onTabRight={this.onTabRight} />
@@ -142,32 +123,20 @@ class Index extends React.Component {
                     onTabClick={this.onTabClick}
                 >
                     <TabBox>{
-                        this.state.allDiarys.length > 0 ?
-                            <DiaryList
-                                list={this.state.allDiarys}
-                                onClickDiary={this.onClickDiary}
-                                onClickFavor={this.onClickFavor}
-                                pagecount={pagecount}
-                                onRefresh={async (start, count) => {
-                                    this.setState({ refreshing: true })
-                                    await this.getAllDiarys(start, count)
-                                    this.setState({ refreshing: false })
-                                }}
-                            ></DiaryList> : <NoListData></NoListData>
+                        <DiaryList
+                            onClickDiary={this.onClickDiary}
+                            onClickFavor={this.onClickFavor}
+                            pageSize={pageSize}
+                            onRefresh={this.getAllDiarys}
+                        ></DiaryList>
                     }</TabBox>
                     <TabBox>{
-                        this.state.myDiarys.length > 0 ?
-                            <DiaryList
-                                list={this.state.myDiarys}
-                                onClickDiary={this.onClickDiary}
-                                onClickFavor={this.onClickFavor}
-                                pagecount={pagecount}
-                                onRefresh={async (start, count) => {
-                                    this.setState({ refreshing: true })
-                                    await this.getMyDiarys(start, count)
-                                    this.setState({ refreshing: false })
-                                }}
-                            ></DiaryList> : <NoListData></NoListData>
+                        <DiaryList
+                            onClickDiary={this.onClickDiary}
+                            onClickFavor={this.onClickFavor}
+                            pageSize={pageSize}
+                            onRefresh={this.getMyDiarys}
+                        ></DiaryList>
                     }</TabBox>
                 </Tabs>
                 <AddWrap>

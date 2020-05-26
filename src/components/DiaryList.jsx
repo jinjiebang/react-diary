@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import styled from 'styled-components'
-import { PullToRefresh } from 'antd-mobile'
+import { PullToRefresh, ListView } from 'antd-mobile'
+import NoListData from '../components/NoListData'
 const ItemWrap = styled.div`
     width: 100%;
-    padding: 0.8rem 0.8rem;
+    padding: 0.4rem 0.8rem;
 `
 const Item = styled.div`
     border-radius: 0.3rem;
@@ -48,68 +49,110 @@ const IconSvg = styled.svg`
 class DiaryList extends Component {
     constructor(props) {
         super(props);
+        const dataSource = new ListView.DataSource({
+            rowHasChanged: (row1, row2) => row1 !== row2,
+        });
         this.state = {
+            dataSource,
+            data: [],
+            useBodyScroll: false,
+            isLoading: false,
+            isRefreshing: false,
+            hasMore: true,
             down: true,
         }
         this.pageNum = 0;
         this.bgcolors = ["#b7c981", "#b2a69c", "#ad8dc6", "#bfb2a8", "#8d847e", "#a1807d", "#88d0c0"]
     }
     filterContent(content) {
-        return content.length < 68 ? content : content.substring(0, 65) + '...';
+        return content.length < 70 ? content : content.substring(0, 67) + '...';
     }
-    onRefresh = () => {
-        if (this.state.down) {
+    componentDidUpdate() {
+        if (this.state.useBodyScroll) {
+            document.body.style.overflow = 'auto';
+        } else {
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    componentDidMount() {
+        this.onRefresh(true);
+    }
+    onEndReached = (event) => {
+        if (this.state.isLoading || !this.state.hasMore) {
+            return;
+        }
+        this.onRefresh(false)
+    };
+    onRefresh = async (isPullDown = true) => {
+        this.setState({ refreshing: true, isLoading: true });
+        if (isPullDown) {
             this.pageNum = 0;
         } else {
             this.pageNum++;
         }
-        const start = this.pageNum * this.props.pagecount;
-        const count = this.props.pagecount;
-        this.props.onRefresh(start, count);
+        const start = this.pageNum * this.props.pageSize;
+        const count = this.props.pageSize;
+        let newData = await this.props.onRefresh(start, count);
+        this.state.hasMore = newData.length > 0;
+        let data = isPullDown ? newData : [...this.state.data, ...newData]
+        this.setState({
+            isLoading: false,
+            isRefreshing: false,
+            data,
+            dataSource: this.state.dataSource.cloneWithRows(data)
+        })
     }
     render() {
-        return (
-            <PullToRefresh
-                damping={100}
-                refreshing={this.props.refreshing}
-                onRefresh={this.onRefresh}
-                distanceToRefresh={80}
-                style={{
+        const renderRow = (item, sectionID, index) => {
+            return (<ItemWrap>
+                <Item
+                    style={{ backgroundColor: this.bgcolors[index % this.bgcolors.length] }}
+                    key={item.id}
+                    onClick={this.props.onClickDiary.bind(this, item)}
+                >
+                    <ItemTitle>{item.nickname}</ItemTitle>
+                    <ItemContent>{this.filterContent(item.content)}</ItemContent>
+                    <ItemFeature>
+                        <ItemFavor>
+                            <div onClick={this.props.onClickFavor.bind(this, item)}>
+                                <IconSvg
+                                    className="icon svg-icon"
+                                    aria-hidden="true"
+                                >
+                                    {item.isFavor === 1 ? (<use href="#icon-xihuan" />) : (<use href="#icon-xihuanhui" />)}
+                                </IconSvg>
+                            </div>
+                            <span>{item.favor_nums}</span>
+                        </ItemFavor>
+                        <ItemTime>{item.create_time}</ItemTime>
+                    </ItemFeature>
+                </Item>
+            </ItemWrap>)
+        }
+        if (this.state.data.length > 0) {
+            return <ListView
+                key={this.state.useBodyScroll ? '0' : '1'}
+                ref={el => this.lv = el}
+                dataSource={this.state.dataSource}
+                renderFooter={() => (<div style={{ padding: 10, textAlign: 'center' }}>
+                    {this.state.isLoading ? 'Loading...' : 'Loaded'}
+                </div>)}
+                renderRow={renderRow}
+                useBodyScroll={this.state.useBodyScroll}
+                style={this.state.useBodyScroll ? {} : {
                     height: '100%',
-                    overflow: 'auto',
                 }}
-                ref={el => this.ptr = el}
-                indicator={this.state.down ? {} : { deactivate: '上拉可以刷新' }}
-                direction={this.state.down ? 'down' : 'up'}
-            >
-                <ItemWrap>
-                    {this.props.list.map((item, index) => {
-                        return (<Item
-                            style={{ backgroundColor: this.bgcolors[index % this.bgcolors.length] }}
-                            key={item.id}
-                            onClick={this.props.onClickDiary.bind(this, item)}
-                        >
-                            <ItemTitle>{item.nickname}</ItemTitle>
-                            <ItemContent>{this.filterContent(item.content)}</ItemContent>
-                            <ItemFeature>
-                                <ItemFavor>
-                                    <div onClick={this.props.onClickFavor.bind(this, item)}>
-                                        <IconSvg
-                                            className="icon svg-icon"
-                                            aria-hidden="true"
-                                        >
-                                            {item.isFavor === 1 ? (<use href="#icon-xihuan" />) : (<use href="#icon-xihuanhui" />)}
-                                        </IconSvg>
-                                    </div>
-                                    <span>{item.favor_nums}</span>
-                                </ItemFavor>
-                                <ItemTime>{item.create_time}</ItemTime>
-                            </ItemFeature>
-                        </Item>)
-                    })}
-                </ItemWrap>
-            </PullToRefresh>
-        );
+                pullToRefresh={<PullToRefresh
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.onRefresh}
+                />}
+                onEndReached={this.onEndReached}
+                onEndReachedThreshold={200}
+                pageSize={this.pageSize}
+            />
+        } else {
+            return <NoListData></NoListData>
+        }
     }
 }
 
